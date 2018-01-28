@@ -1,7 +1,7 @@
 '''
 File Name      : activity_data_daily.py
 Author Name    : Lakshmi Damodara
-Date           : 01/26/2018
+Date           : 01/28/2018
 Version        : 1.0
 Description    :
 This program reads the individual sheets in mechanical tracker file and gets the values for the daily activity Data table
@@ -15,8 +15,7 @@ Functions:
 converDate, convertDate1
 
 Files need to run this program:
-1. excel_act_tble_config.ini
-2. excel_file_config.ini
+1. excel_file_config.ini
 
 Program dependencies:
 1. excel_file_config_reader.py
@@ -117,7 +116,7 @@ import excel_file_config_reader as efcr
 Log_FName = efcr.logfileName()
 Log_Dname = efcr.logfileDirectory()
 Log_FileName = Log_Dname + Log_FName # directory + filename
-print(Log_FileName)
+#print(Log_FileName)
 logging.basicConfig(filename=Log_FileName,level=logging.DEBUG,)
 
 logging.info('Program: activities_data_daily.py........')
@@ -127,30 +126,26 @@ L_FName = efcr.fileName()
 L_Dname = efcr.fileDirectory()
 L_FileName = L_Dname + L_FName # directory + filename
 logging.info('activities_data_daily.py : opening excel file name - %s'%L_FileName)
-# passing the file name and creating an instance of the workbook
+
+# passing the file name and creating an instance of the workbook with actual values and ignoring the formulas
 wb = openpyxl.load_workbook(L_FileName,data_only='True')
 
-#Reading for each sheet
-# getting the required sheet
-result_data_sheet1 = []
-result_data_sheet2 = []
-result_data_sheet3 = []
+# Fist get the active range sheets from excel_file_config.ini using excel_file_config_reader.py
+asheets = []
+result_data_sheet = []
 
-sheet = wb['Pile Installation']
-result_data_sheet1 = getSheetResult(wb,sheet)
-ewWriter.write_activity_daily_data_CSV('..\output\daily_PileInstallation_activity_data.csv', result_data_sheet1,'..\log_activity_data.txt')
-print('Finished Writing Pile Installation :%d' %len(result_data_sheet1))
+asheets = efcr.getActivitySheets()
+len_asheets = len((asheets))
 
-sheet = wb['Torque Tube Rows Installed']
-result_data_sheet2 = getSheetResult(wb,sheet)
-ewWriter.write_activity_daily_data_CSV('..\output\daily_TorqueTubeRowInstalled_activity_data.csv', result_data_sheet2,'..\log_activity_data.txt')
-print('Finished writing TorqueTubeRowInstalled :%d' %len(result_data_sheet2))
-
-sheet = wb['Tracker Rows Completed']
-result_data_sheet3 = getSheetResult(wb,sheet)
-ewWriter.write_activity_daily_data_CSV('..\output\daily_TorqueTubeRow_activity_data.csv', result_data_sheet3,'..\log_activity_data.txt')
-print('Finished Writing TrackerRowsCompleted :%d' %len(result_data_sheet3))
-
-
+for i in range(0,len_asheets,2):
+    sheet_val = asheets[i]
+    sheet = efcr.shName(sheet_val) # get the sheet name
+    #print(sheet)
+    Asheet = wb[sheet] # creating an instance of the sheet
+    result_data_sheet = getSheetResult(wb, Asheet) # getting the values of the sheet in
+    outDir = efcr.outputDirectory() # getting the directory for writing the output file
+    loc_fname = outDir + sheet + '.csv' # creating the outputfile name with directory,sheetname
+    # calling the excel_writing.py to write the data to the file
+    ewWriter.write_activity_daily_data_CSV(loc_fname, result_data_sheet,'..\log_activity_data.txt')
 
 #---- End of Program ------
