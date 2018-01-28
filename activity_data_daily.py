@@ -124,6 +124,7 @@ def getSheetResult(wbe, sheet_name):
     result_data=remove_items_list(result_data,popping_Var_None)
 
     # return the final list to the calling function
+    print(result_data)
     return result_data
 
 ### ---------End of Functions -----
@@ -169,6 +170,7 @@ for i in range(0,len_asheets,2):
     result_data_sheet = getSheetResult(wb, Asheet) # getting the values of the sheet in
     outDir = efcr.outputDirectory() # getting the directory for writing the output file
     loc_fname = outDir + sheet + '.csv' # creating the outputfile name with directory,sheetname
+    print(loc_fname)
     # calling the excel_writing.py to write the data to the file
     ewWriter.write_activity_daily_data_CSV(loc_fname, result_data_sheet,'..\log_activity_data.txt')
 
