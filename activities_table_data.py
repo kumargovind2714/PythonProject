@@ -34,7 +34,6 @@ import datetime
 import logging
 
 import excel_writing as ewWriter
-import log_file_writer as logWriter
 
 ### -- Start of Functions --------
 # function to convert dates to string in mmddyyyy format
@@ -121,16 +120,6 @@ tot_activity = config1['TotalActivities']['total_activities']
 tot_activity_count = int(tot_activity) + 1
 
 # initializing a list
-L1 = list()
-L2 = list()
-L3 = list()
-L4 = list()
-L5 = list()
-L6 = list()
-L7 = list()
-L8 = list()
-L9 = list()
-L10 = list()
 Final_List = list()
 
 # This for loop is to go through the excel sheet
@@ -142,83 +131,32 @@ logging.debug('Entering into For loop to get values from excel sheet')
 activityName_active_sheet = wrksheet_names[0]
 # pass the active sheet name
 sheet = wb[activityName_active_sheet]
+L1 = []
 
 for i in range(1,int(tot_activity_count)):
-    LC_activities_name_cell_position = getActivityNameCellPosition(i)
-    LC_activities_unit_name_cell_position = getUnitNameCellPosition(i)
-    LC_activities_contractor_name_cell_position = getContractorNameCellPosition(i)
-    LC_activities_planned_start_cell_position = getPlannedStartCellPosition(i)
-    LC_activities_planned_end_cell_position = getPlannedEndCellPosition(i)
+    L_activityName_cell_value = sheet[getActivityNameCellPosition(i)]
+    L_activities_unit_name_cell_value = sheet[getUnitNameCellPosition(i)]
+    L_activities_contractor_name_cell_value = sheet[getContractorNameCellPosition(i)]
+    LC_activities_planned_start_cell_value = sheet[getPlannedStartCellPosition(i)]
+    L_activities_planned_start_date = convertDate(LC_activities_planned_start_cell_value.value).strftime('%m%d%Y')
+    LC_activities_planned_end_cell_value = sheet[getPlannedEndCellPosition(i)]
+    L_activities_planned_end_date = convertDate(LC_activities_planned_end_cell_value.value).strftime('%m%d%Y')
 
-    L_activityName_cell_value    = sheet[LC_activities_name_cell_position]
-    L_activities_unit_name_cell_value = sheet[LC_activities_unit_name_cell_position]
-    L_activities_contractor_name_cell_value = sheet[LC_activities_contractor_name_cell_position]
-    LC_activities_planned_start_cell_value = sheet[LC_activities_planned_start_cell_position]
-    L_activities_planned_start_date = convertDate(LC_activities_planned_start_cell_value.value)
-    LC_activities_planned_end_cell_value = sheet[LC_activities_planned_end_cell_position]
-    L_activities_planned_end_date = convertDate(LC_activities_planned_end_cell_value.value)
     # Depending on the number of activities, the if loop will load the list
-    if (i == 1):
-        j = i-1
-        L1.insert(j,L_activityName_cell_value.value)
-        L1.insert(incrementfnc(j+1),L_activities_unit_name_cell_value.value)
-        L1.insert(incrementfnc(j+2),L_activities_contractor_name_cell_value.value)
-        L1.insert(incrementfnc(j+3),L_activities_planned_start_date)
-        L1.insert(incrementfnc(j+4),L_activities_planned_end_date)
-        logging.debug('activities_table_data.py : Creating List with first set of records ')
-
-    elif (i == 2):
-        j = i - 1
-        L2.insert(j,L_activityName_cell_value.value)
-        L2.insert(incrementfnc(j+1),L_activities_unit_name_cell_value.value)
-        L2.insert(incrementfnc(j+2),L_activities_contractor_name_cell_value.value)
-        L2.insert(incrementfnc(j+3),L_activities_planned_start_date)
-        L2.insert(incrementfnc(j+4),L_activities_planned_end_date)
-        #print(L2)
-        logging.debug('activities_table_data.py : Creating List with second set of records ')
-
-    elif (i == 3):
-        j = i - 1
-        L3.insert(j,L_activityName_cell_value.value)
-        L3.insert(incrementfnc(j+1),L_activities_unit_name_cell_value.value)
-        L3.insert(incrementfnc(j+2),L_activities_contractor_name_cell_value.value)
-        L3.insert(incrementfnc(j+3),L_activities_planned_start_date)
-        L3.insert(incrementfnc(j+4),L_activities_planned_end_date)
-        #print(L3)
-        logging.debug('activities_table_data.py : Creating List with third set of records ')
-
-    elif (i == 4):
-        j = i - 1
-
-    elif (i == 5):
-        j = i - 1
-
-    elif (i == 6):
-        j = i - 1
-
-    elif (i == 7):
-        j = i - 1
-
-    elif (i == 8):
-        j = i - 1
-
-    elif (i == 9):
-        j = i - 1
-
-    elif (i == 10):
-        j = i - 1
-    else:
-        break
-
-
-Final_List = [L1,L2,L3]
-
-# output file
-output_FileName1 = outfileDir() + str(outfile())
-output_FileName = output_FileName1.replace("'","")
-logging.debug('activities_table_data.py : sending the list to excel_writing.py file ')
-# Now pass the list along with filename to the writer python file
-ewWriter.writeCSVFile(output_FileName,Final_List,Log_FileName)
+    j = i - 1
+    L1.insert(j,L_activityName_cell_value.value)
+    L1.insert(incrementfnc(j+1),L_activities_unit_name_cell_value.value)
+    L1.insert(incrementfnc(j+2),L_activities_contractor_name_cell_value.value)
+    L1.insert(incrementfnc(j+3),L_activities_planned_start_date)
+    L1.insert(incrementfnc(j+4),L_activities_planned_end_date)
+    final_list = [L1]
+    # output file
+    output_FileName1 = outfileDir() + str(outfile())
+    output_FileName = output_FileName1.replace("'","")
+    logging.debug('activities_table_data.py : sending the list to excel_writing.py file ')
+    # Now pass the list along with filename to the writer python file
+    ewWriter.writeCSVFile(output_FileName,final_list,Log_FileName)
+    L1 = []
 
 wb.close()
 config1.clear()

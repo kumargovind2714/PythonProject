@@ -20,19 +20,17 @@ def writeCSVFile(oFile, listOfListVal,logFname):
     logging.info('excel_writing.py : Opening the csv file for writing the output %s' %oFile)
     with open(oFile, 'a') as outcsv:
         #configure writer to write standard csv file
-        writer = csv.writer(outcsv, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
-        #writer.writerow(['number', 'text', 'number'])
-        for item in listOfListVal:
-            #Write item to outcsv
-            writer.writerow([item[0], item[1], item[2], item[3], item[4]])
-            logging.info(item[0])
-            logging.info(item[1])
-            logging.info(item[2])
-            logging.info(item[3])
+        writer = csv.writer(outcsv, delimiter=",", lineterminator='\n')
+        print(listOfListVal)
+        Len_listOfListVal = len(listOfListVal)
+        for list in range(0,Len_listOfListVal):
+            writer.writerow(listOfListVal[list])
+
+    outcsv.close()
 
 
 # function to write the data into the csv file.
-def write_activity_daily_data_CSV(FileN, rslt,logFname):
+def write_activity_daily_data_CSV(FileN, rslt):
     logging.info('excel_writing.py : Opening the csv file for writing the output %s' %FileN)
     with open(FileN, 'a') as outcsv:
         #configure writer to write standard csv file
@@ -40,4 +38,5 @@ def write_activity_daily_data_CSV(FileN, rslt,logFname):
         #writer.writerow(['number', 'text', 'number'])
         writer.writerows(rslt)
 
+    outcsv.close()
 #---- End of program

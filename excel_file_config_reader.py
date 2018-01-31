@@ -24,7 +24,12 @@ config = configparser.ConfigParser()
 config_act_tbl_config = configparser.ConfigParser()
 
 # hard-coded config file to be read by this program
-config.read('..\excel_file_config.ini')
+ConfigFileName = 'excel_file_config.ini'
+ConfigDirName = '..\\'
+L_FileName = ConfigDirName + ConfigFileName
+print(L_FileName)
+
+config.read(L_FileName)
 
 # returns the excel filename to be read
 def fileName():
@@ -50,9 +55,12 @@ def outputDirectory():
     output_dirName = output_dirName1.replace("'", "")
     return output_dirName
 
+def outputfileName():
+    return config['OutputFile']['outfile']
+
 # returns the total sheets within the excel workbook
 def totalNoSheets():
-    return config['sheets']['TotalSheets']
+    return config['fileDetails']['TotalSheets']
 
 # returns the database name of the database
 def shName(num):
