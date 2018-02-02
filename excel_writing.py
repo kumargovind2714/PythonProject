@@ -35,7 +35,6 @@ def write_activity_daily_data_CSV(FileN, rslt):
     with open(FileN, 'a') as outcsv:
         #configure writer to write standard csv file
         writer = csv.writer(outcsv, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
-        #writer.writerow(['number', 'text', 'number'])
         writer.writerows(rslt)
 
     outcsv.close()
