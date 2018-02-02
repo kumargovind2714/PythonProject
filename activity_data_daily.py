@@ -37,6 +37,7 @@ import logging
 
 
 import excel_writing as ewWriter
+import Database_Insert as dbi
 
 ### -- Start of Functions --------
 # function to convert dates to string in mmddyyyy format
@@ -63,11 +64,10 @@ def remove_items_list(listVar,removeListVar):
 def getSheetResult(wbe,active_sheet_value):
     sName = efcr.shName(active_sheet_value)  # get the sheet name
     Asheet = wbe[sName]
-    # get the max count of rows and cols
+   # get the max count of rows and cols
     m_row = Asheet.max_row
     m_col = Asheet.max_column
     m_row = m_row + 1
-    #print(m_row, m_col)
 
     # -- This section is to store the data of the active sheet in to List of Lists
     # -- result_data is the list of list containing : rows and columns of the active sheet
@@ -81,10 +81,8 @@ def getSheetResult(wbe,active_sheet_value):
         if not Asheet.row_dimensions[curr_row].hidden == True:  # dont read if the row is hidden
             row_data = []
             row_data.append(sName) # inserting the activity name
-            for curr_col in range(2, 8, 1):
-                # print('I am in row :%d' %curr_row)
+            for curr_col in range(2, 8, 1): # read each col. from the sheet starting from col number 2 upto col 8
                 data = Asheet.cell(row=curr_row, column=curr_col)
-                #print(row_data)
                 if isinstance(data.value, datetime.datetime): # getting the date value and converting to mmddyyyy format value
                     row_data.append(convertDate(data.value).strftime('%m%d%Y')) # inserting the value to row_data
                 else:
@@ -98,15 +96,11 @@ def getSheetResult(wbe,active_sheet_value):
     # -- If yes, then the index value is stored in popping_Var
 
     popping_Var = []
-    LC_pop_len = len(result_data)
-
     ## Now accessing the list of list result_data : result_data = [][]
-    for i in range(0, LC_pop_len, 1):
-        for j in range(1, 7, 1):
-            LC_data = result_data[i][j]
-            if type(LC_data) == str:
-                if len(LC_data) > 10:
-                    popping_Var.append(i)
+    for i in range(0, len(result_data), 1):
+        for j in range(1, 7, 1):  # access the list from index of 1 in result_data as the index[0] is the project name
+            if type(result_data[i][j]) == str and len(result_data[i][j]) > 10:
+                popping_Var.append(i)
                 break
 
     # Call the function to remove the list of values in result_data which are referenced in popping_Var
@@ -117,19 +111,20 @@ def getSheetResult(wbe,active_sheet_value):
 ### If the planned to date column has null values, those rows in the result_data list are removed.
 ### --------------------------------------
     popping_Var_None = []
-    LC_pop_len_none = len(result_data)
     ## Now accessing the list of list result_data with None Value
-    for i in range(0, LC_pop_len_none, 1):
-        LC_data = result_data[i][5]
-        if LC_data == None: # checking if the list index[5] in result_data is None
+    for i in range(0, len(result_data), 1):
+        if result_data[i][5] == None: # checking if the list index[5] in result_data is None
             popping_Var_None.append(i) # store the index value in popping_Var_None list
 
     # Call the function to remove the list containing None or null values as referenced in popping_Var_None
     result_data=remove_items_list(result_data,popping_Var_None)
 
     # return the final list to the calling function
-    print(result_data)
+    logging.info(result_data)
+    del popping_Var
+    del popping_Var_None
     return result_data
+
 
 ### ---------End of Functions -----
 
@@ -137,20 +132,17 @@ def getSheetResult(wbe,active_sheet_value):
 import excel_file_config_reader as efcr
 
 # get the filename and directory for logfile writing
-Log_FName = efcr.logfileName()
-Log_Dname = efcr.logfileDirectory()
-Log_FileName = Log_Dname + Log_FName # directory + filename
-#print(Log_FileName)
+Log_FileName = efcr.logfileDirectory() + efcr.logfileName()  # directory + filename
 logging.basicConfig(filename=Log_FileName,level=logging.DEBUG,)
 
-logging.info('Program: activities_data_daily.py........')
+logging.info('##---Program: activities_data_daily.py..........................')
+logging.info(datetime.datetime.today())
+logging.info('##-------------------- ---------------------------------........')
 
 # get the filename and directory : Excel fileName and directory for reading values
-L_FName = efcr.fileName()
-L_Dname = efcr.fileDirectory()
-L_FileName = L_Dname + L_FName # directory + filename
+L_FileName = efcr.fileDirectory() + efcr.fileName() # directory + filename
 logging.info('activities_data_daily.py : opening excel file name - %s'%L_FileName)
-
+print(L_FileName)
 # passing the file name and creating an instance of the workbook with actual values and ignoring the formulas
 wb = openpyxl.load_workbook(L_FileName,data_only='True')
 
@@ -173,5 +165,17 @@ for i in range(0,len_asheets,2):
     loc_fname = efcr.outputDirectory() + efcr.outputfileName() # getting the output directory and filename
     # calling the excel_writing.py to write the data to the file
     ewWriter.write_activity_daily_data_CSV(loc_fname, result_data_sheet)
+    dbi.executeSQL_Activities_Daily(result_data_sheet)
+
+# close all the connections
+wb.close()
+# close or delete all the open instances, Lists, and connections
+# clears all the variables from memory
+
+del result_data_sheet
+del asheets
+del efcr
+del ewWriter
+del dbi
 
 #---- End of Program ------
