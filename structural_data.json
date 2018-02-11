@@ -1,0 +1,104 @@
+[
+	{
+		"project":{
+		"name" : "Bayshore-A",
+		"start" : "04192018",
+		"end": "08212018",
+		"workdays":["M","T","W","Th","F"],
+		"budget":"400",
+		"location":{
+			"street1":"231, 1st cross",
+			"street2":"Suite 2",
+			"city":"Long Beach",
+			"state":"CA",
+			"postal":"20134",
+			"country":"USA"
+			}
+		},
+		"bundles":{
+		"name" : "Mechanical",
+		"phases" : "Origination",
+		"activities":{
+			"name":"Pile Installation",
+			"contractor": "Arraycon",
+			"total_planned_hours":"245",
+			"total_planned_units":"11432",
+			"planned_start":"04192018",
+			"planned_end":"08212018",
+			"actual_start":"04212018",
+			"actual_end":"08242018",
+			"unit": {
+				"name": "Rows"
+			},
+			"material": "Material"
+			},
+		"activities":{
+			"name":"Torque Row Installed",
+			"contractor": "Sacremento",
+			"total_planned_hours":"300",
+			"total_planned_units":"1432",
+			"planned_start":"04192019",
+			"planned_end":"08212019",
+			"actual_start":"04212019",
+			"actual_end":"08242019",
+			"unit": {
+				"name": "piles"
+			},
+			"material": "Material"
+			}
+		},
+		"bundles":{
+		"name" : "Electrical",
+		"phases" : "Origination",
+		"activities":{
+			"name":"LGH",
+			"contractor": "GKM",
+			"total_planned_hours":"245",
+			"total_planned_units":"11432",
+			"planned_start":"04192018",
+			"planned_end":"08212018",
+			"actual_start":"04212018",
+			"actual_end":"08242018",
+			"unit": {
+				"name": "Rows"
+			},
+			"material": "Material"
+			},
+		"activities":{
+			"name":"LA",
+			"contractor": "SK",
+			"total_planned_hours":"300",
+			"total_planned_units":"1432",
+			"planned_start":"04192019",
+			"planned_end":"08212019",
+			"actual_start":"04212019",
+			"actual_end":"08242019",
+			"unit": {
+				"name": "piles"
+			},
+			"material": "Material"
+			}
+		},
+		"contractors":[{
+			"name":"Arraycon",
+			"email": "arraycon@gmail.com",
+			"phone":"6461241234",
+			"primary_contact":"6461234567"
+		}],
+		"materials":[{
+			"name":"",
+			"planned_delivery": "",
+			"actual_delivery":"",
+			"unit_cost":""
+		}],
+		"incidents":[{
+			"date":"",
+			"type": "IncidentType",
+			"class":"IncidentClass",
+			"contractor":"Contractor"
+		}]
+}]
+
+	
+
+	
